@@ -74,7 +74,7 @@ public class AssetRepository : IAssetRepository
         string category, CancellationToken cancellationToken = default)
     {
         return await _context.Assets
-            .Where(a => a.Category == category)
+            .Where(a => a.Category.ToLower() == category.ToLower())
             .OrderBy(a => a.Name)
             .ToListAsync(cancellationToken);
     }

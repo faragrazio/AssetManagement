@@ -5,7 +5,7 @@
 **API REST enterprise-grade per la gestione di asset aziendali e ordini di manutenzione**
 
 [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?style=for-the-badge&logo=dotnet)](https://dotnet.microsoft.com)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://postgresql.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://postgresql.org)
 [![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
 [![JWT](https://img.shields.io/badge/Auth-JWT-000000?style=for-the-badge&logo=jsonwebtokens)](https://jwt.io)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
@@ -19,8 +19,6 @@
 ## 📋 Panoramica
 
 Questo progetto è un'**API REST completa** per la gestione di asset aziendali (macchinari, attrezzature, veicoli) e dei relativi ordini di manutenzione. Costruita seguendo principi di **Clean Architecture**, **CQRS** e **Domain-Driven Design**, dimostra l'implementazione di pattern architetturali moderni richiesti in contesti enterprise.
-
-Il progetto nasce dall'esperienza reale in ambito industriale: gestione del ciclo di vita degli asset, transizioni di stato controllate, storicizzazione degli interventi manutentivi.
 
 ### Cosa rende questo progetto interessante
 
@@ -139,19 +137,17 @@ Result<T> → Controller → HTTP Response
 
 | Categoria | Tecnologia | Versione | Scopo |
 |-----------|-----------|---------|-------|
-| **Runtime** | .NET | 10.0 LTS | Framework principale |
+| **Runtime** | .NET | 10.0 | Framework principale |
 | **Web** | ASP.NET Core Web API | 10.0 | Layer HTTP |
-| **Database** | PostgreSQL | 17 | Database relazionale |
+| **Database** | PostgreSQL | 16 | Database relazionale |
 | **ORM** | Entity Framework Core | 10.0 | Operazioni CRUD e migrations |
-| **Micro-ORM** | Dapper | 2.1 | Query SQL complesse |
+| **Micro-ORM** | Dapper | 2.1 | Disponibile per query SQL complesse (EF Core usato di default) |
 | **Mediator** | MediatR | 12.4 | CQRS e pipeline behaviors |
 | **Validation** | FluentValidation | 12.1 | Validazione request |
 | **Auth** | JWT Bearer | 10.0 | Autenticazione stateless |
 | **Hashing** | BCrypt.Net-Next | 4.1 | Hashing password sicuro |
 | **Docs** | Swashbuckle | 10.1 | Swagger UI |
 | **Container** | Docker + Compose | - | Containerizzazione |
-| **Unit Test** | xUnit + FluentAssertions + NSubstitute | - | Test unitari |
-| **Integration Test** | Testcontainers.PostgreSql | 4.11 | Test con DB reale |
 
 ---
 
@@ -159,10 +155,12 @@ Result<T> → Controller → HTTP Response
 
 ### Opzione A — Con Docker (consigliata)
 
+Avvia l'intera infrastruttura (API + PostgreSQL) con un solo comando. L'API viene esposta sulla porta **8080**.
+
 ```bash
 # Clona il repository
-git clone https://github.com/faragrazio/asset-management.git
-cd asset-management
+git clone https://github.com/faragrazio/AssetManagement.git
+cd AssetManagement
 
 # Avvia tutto con un comando
 docker compose up -d
@@ -171,6 +169,8 @@ docker compose up -d
 ```
 
 ### Opzione B — Sviluppo locale
+
+L'API viene avviata sulla porta **5211** (configurazione di default di Kestrel).
 
 #### Prerequisiti
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
@@ -182,8 +182,8 @@ docker compose up -d
 dotnet tool install --global dotnet-ef
 
 # Clona il repository
-git clone https://github.com/faragrazio/asset-management.git
-cd asset-management
+git clone https://github.com/faragrazio/AssetManagement.git
+cd AssetManagement
 
 # Crea il database e applica le migrations
 dotnet ef database update \
@@ -212,11 +212,10 @@ dotnet run --project src/AssetManagement.API
 
 ### Verifica installazione
 
-Una volta avviata l'API, apri il browser su:
-
-```
-http://localhost:5211/swagger
-```
+| Modalità | Swagger UI |
+|----------|-----------|
+| Docker | `http://localhost:8080/swagger` |
+| Locale | `http://localhost:5211/swagger` |
 
 ---
 
@@ -405,28 +404,9 @@ AssetManagement/
 │       ├── Extensions/                  # ServiceCollectionExtensions
 │       └── Program.cs
 │
-├── tests/
-│   ├── AssetManagement.UnitTests/       # Test handler e domain logic
-│   └── AssetManagement.IntegrationTests/ # Test end-to-end con Testcontainers
-│
 ├── Dockerfile                           # Multi-stage build
 ├── docker-compose.yml                   # PostgreSQL + API
 └── AssetManagement.sln
-```
-
----
-
-## 🧪 Esecuzione Test
-
-```bash
-# Tutti i test
-dotnet test
-
-# Solo unit test (veloci, nessuna dipendenza esterna)
-dotnet test tests/AssetManagement.UnitTests
-
-# Solo integration test (richiede Docker per Testcontainers)
-dotnet test tests/AssetManagement.IntegrationTests
 ```
 
 ---
@@ -489,7 +469,7 @@ EF Core per le operazioni CRUD standard (semplice, type-safe, con migration). Da
 ### Perché Result\<T\> invece di eccezioni per i flussi normali?
 "Asset non trovato" non è un errore eccezionale — è un flusso normale. Usare `Result.Failure()` rende il flusso esplicito nel codice senza try/catch overhead. Le eccezioni rimangono per errori tecnici davvero imprevisti.
 
-### Perché timestamp invece di timestamptz in PostgreSQL?
+### Perché `timestamp` invece di `timestamptz` in PostgreSQL?
 Npgsql 10 richiede che i `DateTime` abbiano `Kind=UTC` per le colonne `timestamp with time zone`. Usando `timestamp` (senza timezone) gestiamo esplicitamente tutti i datetime come UTC nel codice C#, evitando conversioni implicite potenzialmente errate.
 
 ---

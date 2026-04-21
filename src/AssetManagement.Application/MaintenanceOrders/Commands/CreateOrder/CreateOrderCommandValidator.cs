@@ -23,7 +23,7 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
 
         RuleFor(x => x.ScheduledDate)
             .NotEmpty().WithMessage("La data pianificata è obbligatoria.")
-            .GreaterThanOrEqualTo(DateTime.UtcNow.Date)
+            .GreaterThanOrEqualTo(_ => DateTime.UtcNow.Date)
             .WithMessage("La data pianificata non può essere nel passato.");
 
         RuleFor(x => x.Priority)

@@ -31,7 +31,7 @@ public class CreateAssetCommandValidator : AbstractValidator<CreateAssetCommand>
         // PurchaseDate: non può essere nel futuro
         RuleFor(x => x.PurchaseDate)
             .NotEmpty().WithMessage("La data di acquisto è obbligatoria.")
-            .LessThanOrEqualTo(DateTime.UtcNow)
+            .LessThanOrEqualTo(_ => DateTime.UtcNow)
             .WithMessage("La data di acquisto non può essere nel futuro.");
     }
 }
