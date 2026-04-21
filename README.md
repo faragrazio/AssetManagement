@@ -174,7 +174,7 @@ L'API viene avviata sulla porta **5211** (configurazione di default di Kestrel).
 
 #### Prerequisiti
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
-- [PostgreSQL 17](https://www.postgresql.org/download/)
+- [PostgreSQL 16](https://www.postgresql.org/download/)
 - [dotnet-ef tool](https://learn.microsoft.com/en-us/ef/core/cli/dotnet)
 
 ```bash
@@ -464,7 +464,8 @@ AssetManagement/
 Le regole di business (es. "non puoi mettere in manutenzione un asset già in manutenzione") vivono nelle entità Domain. Questo garantisce che siano sempre rispettate indipendentemente da chi chiama il codice, rendendo impossibile bypassarle.
 
 ### Perché EF Core + Dapper insieme?
-EF Core per le operazioni CRUD standard (semplice, type-safe, con migration). Dapper per query complesse dove scrivere SQL diretto è più leggibile ed efficiente (aggregazioni, join multipli, report).
+EF Core per le operazioni CRUD standard (semplice, type-safe, con migration). Dapper è incluso come dipendenza per query SQL complesse future (aggregazioni, join multipli, report).
+Attualmente tutte le query usano EF Core.
 
 ### Perché Result\<T\> invece di eccezioni per i flussi normali?
 "Asset non trovato" non è un errore eccezionale — è un flusso normale. Usare `Result.Failure()` rende il flusso esplicito nel codice senza try/catch overhead. Le eccezioni rimangono per errori tecnici davvero imprevisti.
@@ -482,7 +483,7 @@ Full Stack .NET Developer — Reggio Emilia, Italia
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Graziano_Faraone-0077B5?style=flat&logo=linkedin)](https://linkedin.com/in/graziano-faraone-26a071218)
 [![GitHub](https://img.shields.io/badge/GitHub-faragrazio-181717?style=flat&logo=github)](https://github.com/faragrazio)
 
-Stack: `C#` `ASP.NET Core` `.NET 10` `Entity Framework Core` `PostgreSQL` `JavaScript` `jQuery` `Bootstrap`
+Stack: `C#` `ASP.NET Core` `.NET 10` `Entity Framework Core` `PostgreSQL` `Docker` `JWT`
 
 ---
 
