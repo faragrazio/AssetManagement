@@ -1,0 +1,40 @@
+services:
+  # Database PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: asset_management_db
+    environment:
+      POSTGRES_DB: asset_management
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # API ASP.NET Core
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: asset_management_api
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=asset_management;Username=postgres;Password=postgres
+      - Jwt__Key=AssetManagement_SuperSecretKey_2026_MinLength32Chars!
+      - Jwt__Issuer=AssetManagement.API
+      - Jwt__Audience=AssetManagement.Client
+      - Jwt__ExpiryHours=24
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
