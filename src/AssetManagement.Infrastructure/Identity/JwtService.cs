@@ -85,4 +85,9 @@ public class JwtService : IJwtService
             return null;
         }
     }
+
+    public int GetExpiryHours()
+    {
+        return int.Parse(_configuration["Jwt:ExpiryHours"] ?? "24");
+    }
 }

@@ -22,10 +22,8 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
             .MaximumLength(200).WithMessage("Il nome tecnico non può superare 200 caratteri.");
 
         RuleFor(x => x.ScheduledDate)
-            .NotEmpty().WithMessage("La data pianificata è obbligatoria.")
-            .GreaterThanOrEqualTo(_ => DateTime.UtcNow.Date)
-            .WithMessage("La data pianificata non può essere nel passato.");
-
+            .NotEmpty().WithMessage("La data pianificata è obbligatoria.");
+            
         RuleFor(x => x.Priority)
             .IsInEnum().WithMessage("Priorità non valida.");
     }

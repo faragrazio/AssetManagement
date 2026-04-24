@@ -165,6 +165,11 @@ cd AssetManagement
 # Avvia tutto con un comando
 docker compose up -d
 
+# Applica le migrations sul DB (solo al primo avvio)
+docker exec asset_management_api dotnet ef database update \
+  --project src/AssetManagement.Infrastructure \
+  --startup-project src/AssetManagement.API
+
 # L'API sarà disponibile su http://localhost:8080/swagger
 ```
 

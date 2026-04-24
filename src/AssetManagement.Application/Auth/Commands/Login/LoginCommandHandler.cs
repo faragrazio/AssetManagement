@@ -50,7 +50,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<LoginDto
             Email = user.Email,
             FullName = user.FullName,
             Role = user.Role,
-            ExpiresAt = DateTime.UtcNow.AddHours(24) // scadenza token
+            ExpiresAt = DateTime.UtcNow.AddHours(_jwtService.GetExpiryHours()) // scadenza token
         };
 
         return Result<LoginDto>.Success(dto);
