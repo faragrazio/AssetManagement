@@ -12,7 +12,7 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddSwagger();
-
+builder.Services.AddCorsPolicy();
 var app = builder.Build();
 
 // ── Middleware pipeline ───────────────────────────────────────────────
@@ -26,6 +26,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AngularClient");
 app.UseAuthentication(); // prima di Authorization
 app.UseAuthorization();
 app.MapControllers();

@@ -109,4 +109,18 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
+
+    // Configura CORS per consentire le chiamate dal frontend Angular
+    public static IServiceCollection AddCorsPolicy(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AngularClient", policy =>
+                policy.WithOrigins("http://localhost:4200")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+        });
+
+        return services;
+    }
 }
